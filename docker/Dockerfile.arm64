@@ -1,0 +1,38 @@
+FROM arm64v8/debian:bookworm
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
+    dbus \
+    libbluetooth-dev \
+    libglib2.0-dev \
+    libudev-dev \
+    libdbus-1-dev \
+    pkg-config \
+    git \
+    wget \
+    ca-certificates \
+    devscripts \
+    equivs \
+    fakeroot \
+    sudo \
+    python3-docutils \
+    udev \
+    check \
+    flex \
+    bison \
+    libdw-dev \
+    libreadline-dev \
+    libical-dev \
+    libasound2-dev \
+    libell-dev \
+    libjson-c-dev \
+    libsystemd-dev \
+    systemd \
+    && apt-get clean
+
+RUN sed -i "s/doit(\"cp\", '--reflink=auto', \"-a\"/doit(\"cp\", '--reflink=auto', \"-a\", \"--no-preserve=ownership\"/g" /usr/bin/dh_install
+RUN sed -i "s/xargs(\\\@srcs, \"cp\", '--reflink=auto', \"-a\"/xargs(\\\@srcs, \"cp\", '--reflink=auto', \"-a\", \"--no-preserve=ownership\"/g" /usr/bin/dh_install
+
+WORKDIR /build
