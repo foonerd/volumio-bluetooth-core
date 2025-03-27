@@ -59,16 +59,16 @@ Once the source is prepared, you can build the BlueZ packages for your desired a
 
 ```bash
 # Build for ARMv7 (armhf)
-./docker/run-docker.sh bluez armhf --verbose
+./docker/run-docker-bluez.sh bluez armhf --verbose
 
 # Build for ARMv8 (arm64)
-./docker/run-docker.sh bluez arm64 --verbose
+./docker/run-docker-bluez.sh bluez arm64 --verbose
 
 # Build for x86_64 (amd64)
-./docker/run-docker.sh bluez amd64 --verbose
+./docker/run-docker-bluez.sh bluez amd64 --verbose
 
 # Build for ARMv6
-./docker/run-docker.sh bluez armv6 --verbose
+./docker/run-docker-bluez.sh bluez armv6 --verbose
 ```
 
 This will create the appropriate `.deb` packages in the `out/` directory for each architecture.

@@ -18,7 +18,7 @@ if [[ -z "$COMPONENT" || -z "$ARCH" ]]; then
   exit 1
 fi
 
-DOCKERFILE="docker/Dockerfile.$ARCH"
+DOCKERFILE="docker/Dockerfile.bluez.$ARCH"
 IMAGE_TAG="volumio-build-$ARCH"
 
 # Available architectures and corresponding build flags
@@ -34,7 +34,7 @@ ARCH_FLAGS=(
 if [[ -z "${ARCH_FLAGS[$ARCH]}" ]]; then
   echo "Error: Unknown architecture: $ARCH"
   echo "Available architectures: ${!ARCH_FLAGS[@]}"
-  echo "Build targets: bluez, bluez-alsa-tools"
+  echo "Build targets: bluez"
   echo "Verbosity: --verbose"
   exit 1
 fi

@@ -20,30 +20,30 @@ This guide outlines how to build BlueZ 5.72 for Volumio using Docker on an Linux
 ```
 volumio-bluetooth-core/
 ├── build/
-│   └── bluez/                # BlueZ source and packaging
-│       ├── source/           # BlueZ 5.72 source
-│       ├── debian/           # Debian packaging metadata
-│       └── patches/          # (optional) patches for customizations
+│   └── bluez/                      # BlueZ source and packaging
+│       ├── source/                 # BlueZ 5.72 source
+│       ├── debian/                 # Debian packaging metadata
+│       └── patches/                # (optional) patches for customizations
 ├── docker/
-│   ├── Dockerfile.amd64      # Dockerfile for amd64 (x86_64) architecture
-│   ├── Dockerfile.arm64      # Dockerfile for ARM64 architecture
-│   ├── Dockerfile.armhf      # Dockerfile for ARMv7 (armhf) architecture
-│   ├── Dockerfile.armv6      # Dockerfile for ARMv6 architecture
-│   └── run-docker.sh         # Script to run Docker builds for different architectures
+│   ├── Dockerfile.bluez.amd64      # Dockerfile for amd64 (x86_64) architecture
+│   ├── Dockerfile.bluez.arm64      # Dockerfile for ARM64 architecture
+│   ├── Dockerfile.bluez.armhf      # Dockerfile for ARMv7 (armhf) architecture
+│   ├── Dockerfile.bluez.armv6      # Dockerfile for ARMv6 architecture
+│   └── run-docker-bluez.sh         # Script to run Docker builds for different architectures
 ├── docs/
-│   ├── build-bluez.md        # Build guide for BlueZ
-│   └── integration.md        # Integration guide for Volumio and BlueZ
+│   ├── build-bluez.md              # Build guide for BlueZ
+│   └── integration.md              # Integration guide for Volumio and BlueZ
 ├── out/
-│   ├── amd64/               # Output directory for amd64 .deb packages
-│   ├── arm64/               # Output directory for ARM64 .deb packages
-│   ├── armhf/               # Output directory for ARMv7 (armhf) .deb packages
-│   └── armv6/               # Output directory for ARMv6 .deb packages
+│   ├── amd64/                      # Output directory for amd64 .deb packages
+│   ├── arm64/                      # Output directory for ARM64 .deb packages
+│   ├── armhf/                      # Output directory for ARMv7 (armhf) .deb packages
+│   └── armv6/                      # Output directory for ARMv6 .deb packages
 ├── package-sources/
 │   ├── bluez_5.72-1.debian.tar.xz  # Debian packaging files for BlueZ
 │   └── bluez_5.72.orig.tar.xz      # Original source tarball for BlueZ 5.72
-├── README.md                 # Project README file
+├── README.md                       # Project README file
 └── scripts/
-    └── extract-bluez-source.sh  # Script to download and prepare BlueZ source
+    └── extract-bluez-source.sh     # Script to download and prepare BlueZ source
 ```
 
 ---
@@ -102,19 +102,19 @@ To build for a specific architecture, run the appropriate command with `--verbos
 
 ```bash
 # Standard build for ARMv7 (armhf)
-./docker/run-docker.sh bluez armhf --verbose
+./docker/run-docker-bluez.sh bluez armhf --verbose
 
 # Volumio-style .deb suffix
-./docker/run-docker.sh bluez armhf volumio --verbose
+./docker/run-docker-bluez.sh bluez armhf volumio --verbose
 
 # Standard build for ARMv8 (arm64)
-./docker/run-docker.sh bluez arm64 --verbose
+./docker/run-docker-bluez.sh bluez arm64 --verbose
 
 # Standard build for x86_64 (amd64)
-./docker/run-docker.sh bluez amd64 --verbose
+./docker/run-docker-bluez.sh bluez amd64 --verbose
 
 # Standard build for ARMv6
-./docker/run-docker.sh bluez armv6 --verbose
+./docker/run-docker-bluez.sh bluez armv6 --verbose
 ```
 
 Output will be generated in the `out/` directory; example output:
@@ -154,9 +154,9 @@ dpkg -i out/armv6/bluez_5.72-1volumio1_armv6.deb
 You can repeat the build process for other architectures like `arm64`, `amd64`, and `armv6`:
 
 ```bash
-./docker/run-docker.sh bluez arm64 volumio --verbose
-./docker/run-docker.sh bluez amd64 volumio --verbose
-./docker/run-docker.sh bluez armv6 volumio --verbose
+./docker/run-docker-bluez.sh bluez arm64 volumio --verbose
+./docker/run-docker-bluez.sh bluez amd64 volumio --verbose
+./docker/run-docker-bluez.sh bluez armv6 volumio --verbose
 ```
 
 ---
@@ -164,4 +164,4 @@ You can repeat the build process for other architectures like `arm64`, `amd64`, 
 ### Additional Notes:
 - If you're building for multiple architectures, ensure the appropriate Dockerfile (`Dockerfile.arm64`, `Dockerfile.amd64`, etc.) is used.
 - The `extract-bluez-source.sh` script should be rerun if you want to update the source or packaging files.
-- Use the `--verbose` flag in the `run-docker.sh` commands to get detailed logs during the build process.
+- Use the `--verbose` flag in the `run-docker-bluez.sh` commands to get detailed logs during the build process.
