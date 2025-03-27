@@ -23,7 +23,7 @@ if [[ ! -f "$DEBIAN_TAR_PATH" ]]; then
 fi
 
 # Set the destination for extracted source
-DEST_DIR="build/bluez-alsa-tools/source"
+DEST_DIR="build/bluez-alsa-utils/source"
 
 # Cleanup the destination directory before extraction
 echo "[+] Cleaning up destination directory: $DEST_DIR"
@@ -42,4 +42,4 @@ mkdir -p "$DEBIAN_DIR"
 echo "[+] Extracting bluez-alsa.debian.tar.xz to $DEBIAN_DIR"
 tar -xvf "$DEBIAN_TAR_PATH" -C "$DEBIAN_DIR" --strip-components=1
 
-echo "[+] Step 1 completed. Bluez Alsa Tools sources and debian files are extracted to $DEST_DIR"
+echo "[+] Step 1 completed. Bluez Alsa Utils sources and debian files are extracted to $DEST_DIR"

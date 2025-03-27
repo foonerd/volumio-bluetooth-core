@@ -34,7 +34,7 @@ ARCH_FLAGS=(
 if [[ -z "${ARCH_FLAGS[$ARCH]}" ]]; then
   echo "Error: Unknown architecture: $ARCH"
   echo "Available architectures: ${!ARCH_FLAGS[@]}"
-  echo "Build targets: bluez-alsa-tools"
+  echo "Build targets: bluez-alsa-utils"
   echo "Verbosity: --verbose"
   exit 1
 fi
