@@ -43,7 +43,7 @@ volumio-bluetooth-core/
 │   └── bluez_5.72.orig.tar.xz      # Original source tarball for BlueZ 5.72
 ├── README.md                       # Project README file
 └── scripts/
-    └── extract-bluez-source.sh     # Script to download and prepare BlueZ source
+    └── extract-bluez-source.sh     # Script to prepare BlueZ source
 ```
 
 ---
@@ -62,7 +62,7 @@ volumio-bluetooth-core/
 
 ### 1. Prepare Source & Packaging
 
-Start by running the `extract-bluez-source.sh` script, which will download and prepare the BlueZ source and packaging files:
+Start by running the `extract-bluez-source.sh` script, which will prepare the BlueZ source and packaging files:
 
 ```bash
 # Execute the script to extract BlueZ source and prepare packaging
@@ -70,7 +70,7 @@ Start by running the `extract-bluez-source.sh` script, which will download and p
 ```
 
 This will:
-- Download BlueZ 5.72 source.
+- Extract BlueZ 5.72 source.
 - Extract it into `build/bluez/source/`.
 - Copy the necessary Debian packaging files into the `build/bluez/debian/` directory.
 
@@ -162,6 +162,6 @@ You can repeat the build process for other architectures like `arm64`, `amd64`, 
 ---
 
 ### Additional Notes:
-- If you're building for multiple architectures, ensure the appropriate Dockerfile (`Dockerfile.arm64`, `Dockerfile.amd64`, etc.) is used.
+- If you're building for multiple architectures, ensure the appropriate Dockerfile (`Dockerfile.bluez.arm64`, `Dockerfile.bluez.amd64`, etc.) is used.
 - The `extract-bluez-source.sh` script should be rerun if you want to update the source or packaging files.
 - Use the `--verbose` flag in the `run-docker-bluez.sh` commands to get detailed logs during the build process.
