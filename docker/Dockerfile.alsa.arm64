@@ -1,0 +1,38 @@
+FROM arm64v8/debian:bookworm
+
+# Add backports repository to apt sources
+RUN echo "deb http://deb.debian.org/debian bookworm-backports main" > /etc/apt/sources.list.d/bookworm-backports.list
+
+# Install dependencies for ALSA tools build
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    dh-exec \
+    libfreeaptx-dev \
+    libsbc-dev \
+    liblc3-dev \
+    libldacbt-enc-dev \
+    libldacbt-abr-dev \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libspandsp-dev \
+    libopus-dev \
+    libbsd-dev \
+    libsystemd-dev \
+    libasound2-dev \
+    libbluetooth-dev \
+    libdbus-1-dev \
+    libglib2.0-dev \
+    libreadline-dev \
+    check \
+    dbus-daemon \
+    python3-docutils \
+    pkgconf \
+    systemd-dev \
+    -t bookworm-backports && \
+    apt-get clean
+
+# Modify dh_install to avoid ownership preservation when copying files
+RUN sed -i "s/doit(\"cp\", '--reflink=auto', \"-a\"/doit(\"cp\", '--reflink=auto', \"-a\", \"--no-preserve=ownership\"/g" /usr/bin/dh_install
+RUN sed -i "s/xargs(\\\@srcs, \"cp\", '--reflink=auto', \"-a\"/xargs(\\\@srcs, \"cp\", '--reflink=auto', \"-a\", \"--no-preserve=ownership\"/g" /usr/bin/dh_install
+
+WORKDIR /build
