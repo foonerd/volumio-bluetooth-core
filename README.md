@@ -16,7 +16,7 @@ However, Volumio’s current Bluetooth implementation presents several challenge
 
 ## ⚙️ Key Features
 
-- **BlueZ-ALSA Integration**: Replaces the older PulseAudio-based Bluetooth stack with BlueZ-ALSA, reducing audio latency and providing better control over Bluetooth audio output.
+- **BlueZ-ALSA Integration**: Replaces the older PulseAudio-based Bluetooth stack with **BlueZ-ALSA** (`bluez-alsa-utils`), reducing audio latency and providing better control over Bluetooth audio output.
   
 - **Bidirectional Volume Control**: Ensures that volume changes in Volumio are reflected on Bluetooth devices and vice versa. This feature allows users to control the volume from either the Volumio interface or the connected Bluetooth device.
 
@@ -28,7 +28,7 @@ However, Volumio’s current Bluetooth implementation presents several challenge
 
 - **Volumio OS**: This project targets Volumio OS, which is based on Debian, and requires compatibility with multiple architectures (armhf, arm64, amd64).
 - **BlueZ**: The core Bluetooth stack for Linux, specifically version 5.72, for managing Bluetooth connections and streaming.
-- **BlueZ-ALSA**: Replaces PulseAudio for Bluetooth audio routing to ensure bit-perfect audio output with low latency.
+- **BlueZ-ALSA (bluez-alsa-utils)**: Replaces PulseAudio for Bluetooth audio routing to ensure bit-perfect audio output with low latency.
 
 ## 🧭 Architecture Support
 
@@ -43,32 +43,43 @@ This project supports the following architectures:
 
 ### 1. Prepare the Source
 
-Begin by running the `extract-bluez-source.sh` script to fetch the necessary BlueZ source files and Debian packaging metadata:
+Begin by running the extract-bluez-source.sh` and `extract-bluez-alsa-utils-source.sh` script to prepare the necessary **BlueZ** and **bluez-alsa-utils** source files and Debian packaging metadata:
 
 ```bash
 ./scripts/extract-bluez-source.sh
 ```
+This script will:
+- Extract BlueZ 5.72 source.
+- Set up the required packaging metadata for building the BlueZ package.
+- 
+```bash
+./scripts/extract-bluez-alsa-utils-source.sh
+```
 
 This script will:
-- Download and extract BlueZ 5.72 source.
-- Set up the required packaging metadata for building the BlueZ package.
+- Extract **bluez-alsa 4.3.1** source.
+- Set up the required packaging metadata for building the BlueZ and **bluez-alsa-utils** packages.
 
-### 2. Build the BlueZ Packages
+### 2. Build the BlueZ and BlueZ-ALSA Utils Packages
 
-Once the source is prepared, you can build the BlueZ packages for your desired architecture using the provided Docker setup. Run the following command for each architecture:
+Once the source is prepared, you can build the **BlueZ** and **bluez-alsa-utils** packages for your desired architecture using the provided Docker setup. Run the following command for each architecture:
 
 ```bash
 # Build for ARMv7 (armhf)
 ./docker/run-docker-bluez.sh bluez armhf --verbose
+./docker/run-docker-bluez-alsa-utils.sh bluez-alsa-utils armhf --verbose
 
 # Build for ARMv8 (arm64)
 ./docker/run-docker-bluez.sh bluez arm64 --verbose
+./docker/run-docker-bluez-alsa-utils.sh bluez-alsa-utils arm64 --verbose
 
 # Build for x86_64 (amd64)
 ./docker/run-docker-bluez.sh bluez amd64 --verbose
+./docker/run-docker-bluez-alsa-utils.sh bluez-alsa-utils amd64 --verbose
 
 # Build for ARMv6
 ./docker/run-docker-bluez.sh bluez armv6 --verbose
+./docker/run-docker-bluez-alsa-utils.sh bluez-alsa-utils armv6 --verbose
 ```
 
 This will create the appropriate `.deb` packages in the `out/` directory for each architecture.
@@ -81,7 +92,9 @@ After building the `.deb` packages, install them on your Volumio system:
 # Example for ARMv7 (armhf)
 dpkg -i out/armhf/bluez_5.72-1volumio1_arm.deb
 dpkg -i out/armhf/libbluetooth3_5.72-1volumio1_arm.deb
-apt-mark hold bluez libbluetooth3
+dpkg -i out/armhf/bluez-alsa-utils_4.3.1-1volumio1_arm.deb
+dpkg -i out/armhf/bluez-alsa-utils-common_4.3.1-1volumio1_arm.deb
+apt-mark hold bluez libbluetooth3 bluez-alsa-utils bluez-alsa-utils-common
 ```
 
 Repeat the installation for the other architectures as needed.
