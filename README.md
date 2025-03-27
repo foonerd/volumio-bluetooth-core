@@ -1,7 +1,3 @@
-Here's a draft for the **main `README.md`** that focuses on the Bluetooth issue within Volumio, with a clear explanation of the project, its goals, and the impact of Bluetooth on the overall system performance, including volume behavior.
-
----
-
 # Volumio Bluetooth Core
 
 The **Volumio Bluetooth Core** project is designed to provide a streamlined and high-quality Bluetooth audio experience for Volumio OS, focused on improving Bluetooth audio handling, volume behavior, and system integration. It tackles longstanding Bluetooth issues, such as metadata transmission, volume synchronization, and ensuring optimal audio quality for audiophile use.
