@@ -8,7 +8,7 @@ if [[ ! -d "package-sources" ]]; then
 fi
 
 # Set the paths for bluez-alsa source and debian tarballs (adjust if needed)
-ORIG_TAR_PATH="package-sources/bluez-alsa_4.3.1.orig.tar.gz"  # Path to the original source tarball
+ORIG_TAR_PATH="package-sources/bluez-alsa_4.3.1.orig.tar.xz"  # Path to the original source tarball
 DEBIAN_TAR_PATH="package-sources/bluez-alsa_4.3.1-1.debian.tar.xz"  # Path to the debian tarball
 
 # Ensure both tarballs exist
