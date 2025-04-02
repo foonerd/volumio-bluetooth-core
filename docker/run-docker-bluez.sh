@@ -24,7 +24,7 @@ IMAGE_TAG="volumio-build-$ARCH"
 # Available architectures and corresponding build flags
 declare -A ARCH_FLAGS
 ARCH_FLAGS=(
-  ["armv6"]="linux/arm/v6 --build=arm-linux-gnueabihf --host=arm-linux-gnueabihf"
+  ["armv6"]="linux/arm/v7 --build=arm-linux-gnueabihf --host=arm-linux-gnueabihf"
   ["armhf"]="linux/arm/v7 --build=arm-linux-gnueabihf --host=arm-linux-gnueabihf"
   ["arm64"]="linux/arm64 --build=aarch64-linux-gnu --host=aarch64-linux-gnu"
   ["amd64"]="linux/amd64 --build=x86_64-linux-gnu --host=x86_64-linux-gnu"
@@ -61,7 +61,7 @@ echo "[+] Running build for $COMPONENT in Docker ($ARCH)..."
 if [[ "$ARCH" == "armv6" ]]; then
   docker run --rm --platform=$PLATFORM -v "$PWD":/build -w /build $IMAGE_TAG bash -c "\
     cd build/$COMPONENT/source && \
-    export CFLAGS='-O2 -march=armv6 -mfpu=vfp -mfloat-abi=soft' && \
+    export CFLAGS='-O2 -march=armv6 -mfpu=vfp -mfloat-abi=hard -marm' && \
     export CXXFLAGS=\"\$CFLAGS\" && \
     dpkg-buildpackage -us -uc -b"
 else
@@ -90,9 +90,9 @@ if [[ "$MODE" == "volumio" ]]; then
 
     case "$ARCH" in
       armv6)   
-        newf="${f/_armel.deb/_arm.deb}" 
+        newf="${f/_armhf.deb/_arm.deb}" 
         if [[ "$f" != "$newf" ]]; then
-          echo "[VERBOSE] Renaming $f to $newf (ARMv6 target - soft-float)"
+          echo "[VERBOSE] Renaming $f to $newf (ARMv6/7 target VFP2 - hard-float)"
         fi
         ;;
       armhf)   

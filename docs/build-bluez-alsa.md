@@ -1,84 +1,79 @@
 # Build Guide: BlueZ-ALSA Utils for Volumio (Multi-Arch)
 
-This guide outlines how to build **bluez-alsa-utils 4.3.1** for Volumio using Docker on an Ubuntu 24.04 host system. It supports armhf, arm64, amd64, and armv6 targets.
+This guide describes how to build **`bluez-alsa-utils` v4.3.1** for **Volumio OS** using Docker and QEMU. It supports builds for `armhf`, `arm64`, `amd64`, and `armv6` targets from an Ubuntu 24.04 host.
 
 ---
 
-## 🔧 Requirements (on Host)
+## 🔧 Host Requirements
 
-- Ubuntu 24.04 (host)
-- Docker installed (`sudo apt install docker.io`)
-- QEMU registered for multi-arch builds:
+- **OS**: Ubuntu 24.04 (or compatible)
+- **Docker**: Install via `sudo apt install docker.io`
+- **QEMU Multi-Arch Support**:
   ```bash
   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   ```
 
 ---
 
-## 📁 Directory Overview
+## 📁 Project Layout
 
 ```
 volumio-bluetooth-core/
 ├── build/
-│   └── bluez-alsa-utils/                   # bluez-alsa-utils source and packaging
-│       ├── source/                         # bluez-alsa-utils source code
-│       ├── debian/                         # Debian packaging metadata
-│       └── patches/                        # Optional patches for customizations
+│   └── bluez-alsa-utils/
+│       ├── source/         # Extracted source
+│       ├── debian/         # Debian packaging files
+│       └── patches/        # Optional patches
 ├── docker/
-│   ├── Dockerfile.alsa.armhf               # Dockerfile for ARMv7 (armhf)
-│   ├── Dockerfile.alsa.arm64               # Dockerfile for ARMv8 (arm64)
-│   ├── Dockerfile.alsa.amd64               # Dockerfile for x86_64 (amd64)
-│   ├── Dockerfile.alsa.armv6               # Dockerfile for ARMv6
-│   └── run-docker.sh                       # Script to run Docker builds for various architectures
-├── out/
-│   └── <arch>/                             # .deb outputs for each architecture
-├── package-sources/
-│   ├── bluez-alsa_4.3.1-1.debian.tar.xz    # Debian packaging files for bluez-alsa-utils
-│   └── bluez-alsa_4.3.1.orig.tar.xz        # Original source tarball for bluez-alsa-utils
-├── README.md                               # Project README file
-└── scripts/
-    └── extract-bluez-alsa-utils-source.sh  # Script to prepare bluez-alsa-utils source
+│   ├── Dockerfile.alsa.*   # One per architecture
+│   └── run-docker-alsa-utils.sh
+├── out/                    # Architecture-specific .deb output
+├── package-sources/        # Original tarballs and packaging
+├── scripts/
+│   └── extract-bluez-alsa-utils-source.sh
+└── README.md
 ```
 
 ---
 
-## 🧭 What Happens Where
+## 🧭 Build Flow Overview
 
-| Context       | Purpose                         |
-|---------------|---------------------------------|
-| Host (Ubuntu) | Edits files, runs Docker builds |
-| Docker        | Runs dpkg-buildpackage          |
-| Volumio OS    | Installs final .deb packages    |
+
+| Environment    | Role                             |
+| ---------------- | ---------------------------------- |
+| **Host**       | Runs Docker builds, edits files  |
+| **Docker**     | Cross-compiles .deb packages     |
+| **Volumio OS** | Installs resulting .deb packages |
 
 ---
 
-## 🧱 Step-by-Step: Build BlueZ-ALSA Utils
+## 🧱 Step-by-Step Build Instructions
 
 ### 1. Prepare Source & Packaging
 
-Start by running the `extract-bluez-alsa-utils-source.sh` script to fetch the necessary source files and Debian packaging metadata for **bluez-alsa-utils**:
+Run the extraction script to set up `bluez-alsa-utils` source and Debian metadata:
 
 ```bash
-# Execute the script to extract bluez-alsa-utils source and prepare packaging
 ./scripts/extract-bluez-alsa-utils-source.sh
 ```
 
-This script will:
-- Extract **bluez-alsa 4.3.1** source.
-- Set up the required packaging metadata for building the **bluez-alsa-utils** package.
+This script:
 
-After running the script, continue with the following steps.
+- Extracts **bluez-alsa v4.3.1** source
+- Applies Volumio-specific packaging metadata
 
-### 2. Edit debian/changelog
+---
 
-Navigate to the `debian/` directory and update the changelog to reflect the custom Volumio build:
+### 2. Update the Debian Changelog
+
+Edit the changelog to reflect a Volumio-custom build:
 
 ```bash
-# Edit the changelog to add a custom Volumio version
 nano build/bluez-alsa-utils/debian/changelog
 ```
 
-Add this entry at the top:
+Insert a new entry at the top:
+
 ```
 bluez-alsa-utils (4.3.1-1volumio1) bookworm; urgency=medium
 
@@ -87,68 +82,74 @@ bluez-alsa-utils (4.3.1-1volumio1) bookworm; urgency=medium
  -- Your Name <you@example.com>  Tue, 26 Mar 2024 12:00:00 +0000
 ```
 
-### 3. Build for an Arch
+---
 
-Once the source and changelog are prepared, you can proceed to build **bluez-alsa-utils** for your desired architecture. Run the appropriate command with `--verbose` flags for detailed output:
+### 3. Build for Target Architectures
+
+Use the build script to generate `.deb` packages:
 
 ```bash
-# Build for ARMv7 (armhf)
+# ARMv7 (armhf)
 ./docker/run-docker-alsa-utils.sh bluez-alsa-utils armhf --verbose
 
-# Build for ARMv8 (arm64)
+# ARMv8 (arm64)
 ./docker/run-docker-alsa-utils.sh bluez-alsa-utils arm64 --verbose
 
-# Build for x86_64 (amd64)
+# x86_64 (amd64)
 ./docker/run-docker-alsa-utils.sh bluez-alsa-utils amd64 --verbose
 
-# Build for ARMv6
+# ARMv6 (universal Pi target using armhf ABI)
 ./docker/run-docker-alsa-utils.sh bluez-alsa-utils armv6 --verbose
 ```
 
-Output will be generated in the `out/` directory:
+Output files appear in:
 
 ```
-out/armhf/bluez-alsa-utils_4.3.1-1volumio1_arm.deb
-out/arm64/bluez-alsa-utils_4.3.1-1volumio1_arm64.deb
+out/armhf/bluez-alsa-utils_4.3.1-1volumio1_armv7.deb
+out/arm64/bluez-alsa-utils_4.3.1-1volumio1_armv8.deb
 out/amd64/bluez-alsa-utils_4.3.1-1volumio1_x64.deb
-out/armv6/bluez-alsa-utils_4.3.1-1volumio1_armv6.deb
+out/armv6/bluez-alsa-utils_4.3.1-1volumio1_arm.deb
 ```
+
+> Note: ARMv6 builds use `armhf` ABI with `-march=armv6 -mfloat-abi=hard -mfpu=vfp -marm` and are compatible with all Pi models (Pi 0–5).
 
 ---
 
-## 📦 On Volumio OS (Target)
+## 📦 Installing on Volumio OS
 
-To install the generated `.deb` packages on Volumio OS:
+Transfer and install the built packages on your Volumio system:
 
 ```bash
-# Example for ARMv7 (armhf)
-dpkg -i out/armhf/bluez-alsa-utils_4.3.1-1volumio1_arm.deb
+dpkg -i out/armv6/bluez-alsa-utils_4.3.1-1volumio1_arm.deb
+dpkg -i out/armv6/bluez-alsa-utils-common_4.3.1-1volumio1_all.deb
+
+# Prevent accidental upgrades
 apt-mark hold bluez-alsa-utils bluez-alsa-utils-common
 ```
 
-For other architectures, replace `armhf` with `arm64`, `amd64`, or `armv6` as appropriate:
-
-```bash
-dpkg -i out/arm64/bluez-alsa-utils_4.3.1-1volumio1_arm64.deb
-dpkg -i out/amd64/bluez-alsa-utils_4.3.1-1volumio1_x64.deb
-dpkg -i out/armv6/bluez-alsa-utils_4.3.1-1volumio1_armv6.deb
-```
+> Replace `armv6` with `armhf`, `arm64`, or `amd64` depending on the target.
 
 ---
 
-## ✅ Repeat for Other Arches
+## 🔁 Building for Multiple Architectures
 
-You can repeat the build process for other architectures like `arm64`, `amd64`, and `armv6`:
+You can repeat the build process across architectures using:
+
+```bash
+./docker/run-docker-alsa-utils.sh bluez-alsa-utils <arch> volumio --verbose
+```
+
+Example:
 
 ```bash
 ./docker/run-docker-alsa-utils.sh bluez-alsa-utils arm64 volumio --verbose
-./docker/run-docker-alsa-utils.sh bluez-alsa-utils amd64 volumio --verbose
-./docker/run-docker-alsa-utils.sh bluez-alsa-utils armv6 volumio --verbose
 ```
 
 ---
 
-### Additional Notes:
-- If you're building for multiple architectures, ensure the appropriate Dockerfile (`Dockerfile.alsa.arm64`, `Dockerfile.alsa.amd64`, etc.) is used.
-- The `extract-bluez-alsa-utils-source.sh` script should be rerun if you want to update the source or packaging files.
-- Use the `--verbose` flag in the `run-docker-alsa-utils.sh` commands to get detailed logs during the build process.
+## 💡 Notes
+
+- Use the correct Dockerfile per architecture:
+  - `Dockerfile.alsa.armv6`, `Dockerfile.alsa.armhf`, etc.
+- Re-run the extraction script if you want to rebase on a new upstream version.
+- `--verbose` adds build progress logs for debugging or CI diagnostics.
