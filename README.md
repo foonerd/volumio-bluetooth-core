@@ -30,6 +30,8 @@ However, Volumio’s current Bluetooth implementation presents several challenge
 - **BlueZ**: The core Bluetooth stack for Linux, specifically version 5.72, for managing Bluetooth connections and streaming.
 - **BlueZ-ALSA (bluez-alsa-utils)**: Replaces PulseAudio for Bluetooth audio routing to ensure bit-perfect audio output with low latency.
 
+---
+
 ## 🧭 Architecture Support
 
 This project supports the following architectures:
